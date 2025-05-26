@@ -1,8 +1,8 @@
-.PHONY: backend-server
+.PHONY: run server 
 
 run: 
-	cd app && npx expo start --ios 
+	cd app && npx expo start 
 
 server:
-	.env/bin/activate && cd api && python manage.py runserver
+	 .venv/bin/activate && cd api && python manage.py runserver
 	
