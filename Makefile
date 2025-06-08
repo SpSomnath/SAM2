@@ -1,8 +1,15 @@
-.PHONY: run server 
+.PHONY: run server venv install
 
 run: 
 	cd app && npx expo start 
 
 server:
-	 .venv/bin/activate && cd api && python manage.py runserver
-	
+	cd api && ../venv/bin/python manage.py runserver
+
+venv:
+	python3 -m venv venv
+
+
+install: venv
+	venv/bin/pip install -r api/requirements.txt
+		
