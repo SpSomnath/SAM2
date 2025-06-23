@@ -1,0 +1,20 @@
+		Project Guide
+	ToDo
+- Authentication 
+- secure storing for tokens 
+- 
+- home screen ui with navigations
+- build IoT simulator 
+- connect with channel 
+- connect with db 
+- configure Ai
+
+
+
+
+
+
+
+	----React Native Guide----
+npx run reset-project 	// to reset the project 
+npx expo start -c  	// to clear the cache 

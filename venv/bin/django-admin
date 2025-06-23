@@ -1,4 +1,4 @@
-#!/Users/spsomnath/Downloads/Work/projects/SAM2/venv/bin/python
+#!/Users/spsomnath/Downloads/Work/projects/SAM2/venv/bin/python3.13
 # -*- coding: utf-8 -*-
 import re
 import sys

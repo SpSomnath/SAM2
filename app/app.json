@@ -4,7 +4,7 @@
     "slug": "SAM2",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./app/src/assets/images/sam2-logo.png",
     "scheme": "sam2",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./app/src/assets/images/sam2-logo.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
@@ -21,20 +21,35 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./app/src/assets/images/sam2-logo.png"
     },
     "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
+  "expo-router",
+  [
+    "expo-splash-screen",
+    {
+      "image": "./app/src/assets/images/sam2-logo.png",
+      "imageWidth": 200,
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    }
+  ],
+  [
+        "expo-image-picker",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
-    ],
+      ],
+  [
+    "expo-secure-store",
+    {
+      "configureAndroidBackup": true,
+      "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
+    }
+  ],
+  "expo-font"
+],
+
     "experiments": {
       "typedRoutes": true
     }

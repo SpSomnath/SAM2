@@ -25,18 +25,53 @@ SECRET_KEY = "django-insecure-r0c_xhef2o(v6orsy**#)l%c^p51j#u2p!7u(ehg64*&%w1#yn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
 
 
 # Application definition
 
+AUTH_USER_MODEL = 'automation.User'
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+
+}
+
+# Thumbnail uplaod 
+MEDIA_ROOT = BASE_DIR /'media'
+MEDIA_URl = '/media/'
+
+# Daphne
+ASGI_APPLICATION = 'core.asgi.application'
+
+# Channels
+CHANNEL_LAYERS= {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)]}
+    }
+}
+
+
 INSTALLED_APPS = [
+    'daphne',
+    'rest_framework',
+    'rest_framework_simplejwt',
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
+    "automation",
 ]
 
 MIDDLEWARE = [
