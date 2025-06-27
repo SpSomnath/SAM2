@@ -43,10 +43,14 @@ class AutomationConsumer(WebsocketConsumer):
 
         # thumbnail upload 
         if data_source == 'thumbnail':
+            print('recive thumbnail request')
             self.recive_thumbnail(data)
-            # Add Device
         elif data_source == 'add_device':
             self.add_device(data)
+        elif data_source == 'fetch_devices':
+            self.device_request(data)
+        elif data_source == 'device_data_request':
+            self.device_data_request(data)
 
     def add_device(self, data):
         user = self.scope['user']
@@ -87,6 +91,20 @@ class AutomationConsumer(WebsocketConsumer):
         self.send_group(self.username, 'Device', serialized.data)
 
         
+    def device_request(self, data):
+        user = self.scope['user']
+        device = Device.objects.filter(user=user)
+        serialized = DeviceSerializer(device, many=True)
+        print('devices:', serialized.data)
+        self.send_group(self.username, 'devices', serialized.data)
+    
+    def device_data_request(self , data):
+        user = self.scope['user']
+        device_id = data.get('id')
+        device = Device.objects.get(user=user, device_id=device_id)
+        serializer = DeviceDataSerializer(device.data.all(), many=True)
+        print('Device data:', serializer.data)
+        self.send_group(self.username, 'deviceData', serializer.data)
 
 
     def recive_thumbnail(self, data):
@@ -102,9 +120,7 @@ class AutomationConsumer(WebsocketConsumer):
         self.send_group(self.username, 'thumbnail', serialized.data)
 
 
-    def device_request(self, deta):
-        pass
-
+    
 
     # ------------------------------------------
     #   catch/all broadcast to client helper

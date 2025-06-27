@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  Pressable,
-  Image,
-  ScrollView,
-} from "react-native";
+import { View, Text, Pressable, Image, ScrollView } from "react-native";
 import { useEffect } from "react";
 import React from "react";
 import { Link, router } from "expo-router";
@@ -16,7 +10,7 @@ import Card from "@/components/card";
 import utils from "@/core/utils";
 
 import Item from "@/components/Item";
-import devices from "@/core/devices";
+// import devices from "@/core/devices";
 
 const Header = () => {
   const user = useGlobal((state) => state.user);
@@ -74,6 +68,7 @@ function AutomationType({ icon, label }: { icon: any; label: string }) {
 export default function HomeScreen() {
   const socketConnect = useGlobal((state) => state.socketConnect);
   const socketClose = useGlobal((state) => state.socketClose);
+  const devices = useGlobal((state) => state.devices);
 
   useEffect(() => {
     socketConnect();
@@ -105,7 +100,10 @@ export default function HomeScreen() {
           }}>
           <Pressable
             onPress={() => {
-              router.push("/src/screens/Device/DevicePage");
+              router.push({
+                pathname: "/src/screens/Device/DevicePage",
+                params: { filter: "",title: "Connected Device" },
+              });
             }}
             style={{ width: "50%", marginBottom: 0 }}>
             <Card number={10} title="Connected" type="connected" />
@@ -113,21 +111,30 @@ export default function HomeScreen() {
 
           <Pressable
             onPress={() => {
-              router.push("/src/screens/Device/ActiveDevice");
+              router.push({
+                pathname: "/src/screens/Device/DevicePage",
+                params: { filter: "active", title: "Active Device" },
+              });
             }}
             style={{ width: "50%", marginBottom: 0 }}>
             <Card number={6} title="Active" type="active" />
           </Pressable>
           <Pressable
             onPress={() => {
-              router.push("/src/screens/Device/InactiveDevice");
+              router.push({
+                pathname: "/src/screens/Device/DevicePage",
+                params: { filter: "inactive", title: "Inactive Device" },
+              });
             }}
             style={{ width: "50%", marginBottom: 0 }}>
             <Card number={3} title="Inactive" type="inactive" />
           </Pressable>
           <Pressable
             onPress={() => {
-              router.push("/src/screens/Device/AbortedDevice");
+              router.push({
+                pathname: "/src/screens/Device/DevicePage",
+                params: { filter: "abort", title: "Active Device" },
+              });
             }}
             style={{ width: "50%", marginBottom: 0 }}>
             <Card number={1} title="Abort" type="abort" />
@@ -155,9 +162,11 @@ export default function HomeScreen() {
         </View>
       </View>
       <ScrollView style={{ flex: 1 }}>
-        {devices.map((device) => (
-          <Item key={device.id} details={device} />
-        ))}
+        {devices
+          .filter((device) => device.status === "active") // Filter for active devices
+          .map((device) => (
+            <Item key={device.id} details={device} />
+          ))}
       </ScrollView>
     </>
   );

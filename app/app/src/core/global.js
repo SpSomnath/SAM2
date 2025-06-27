@@ -3,7 +3,6 @@ import Secure from "@/core/secure";
 import api from "./api";
 import utils from "./utils";
 import { ADDRESS } from "./api";
-import devices from "./devices";
 
 // --------------------------------
 // Socket recive message handler
@@ -16,17 +15,28 @@ function responseThumbnail(set, get, data) {
 }
 
 function responseDevices(set, get, data) {
-  // utils.log("responseDevices", data);
-  const devices = data.devices.map((device) => {
-    const deviceType = devices.find((d) => d.id === device.type);
-    return {
-      ...device,
-      type: deviceType ? deviceType.name : "Unknown",
-    };
-  });
+  const devices = data.map(device => ({
+    id: device.device_id,
+    name: device.device_name,
+    location: device.location,
+    status: device.status,
+    created_at: device.created_at,
+  }));
 
   set((state) => ({
-    devices: devices,
+    devices: [...state.devices, ...devices], 
+  }));
+}
+function responseDeviceData(set, get, data) {
+  const deviceData = data.map(device => ({
+    id: deviceData.device_id,
+    dataType: deviceData.data_type,
+    value: deviceData.value,
+    timestamp: deviceData.timestamp,
+  }));
+
+  set((state) => ({
+    deviceData: [...state.deviceData, ...deviceData], 
   }));
 }
 
@@ -37,6 +47,8 @@ const useGlobal = create((set, get) => ({
 
   initialized: false,
   devices: [],
+  deviceData:[],
+  setDevices: (newDevices) => set({ devices: newDevices }),
 
   // Fetch devices from the API
 
@@ -133,6 +145,7 @@ const useGlobal = create((set, get) => ({
       const responses = {
         thumbnail: responseThumbnail,
         devices: responseDevices,
+        deviceData : responseDeviceData,
       };
       const resp = responses[parsed.source];
       if (!resp) {
@@ -168,7 +181,8 @@ const useGlobal = create((set, get) => ({
   // ----------------------------------
   fetchDevices: async () => {
     const tokens = await Secure.get("tokens");
-    if (socket && socket.readyState === 1) {
+    const socket = get().socket; // Ensure you get the current socket instance
+    if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(
         JSON.stringify({
           source: "fetch_devices",
@@ -176,6 +190,22 @@ const useGlobal = create((set, get) => ({
       );
     } else {
       utils.log("Fail to fetch devices.");
+    }
+  },
+
+  fetchDevicedata: async (device_id, period) => {
+    const tokens = await Secure.get("tokens");
+    const socket = get().socket; 
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(
+        JSON.stringify({
+          source: "device_data_request",
+          id :device_id,
+          duration: period,
+        })
+      );
+    } else {
+      utils.log("Fail to fetch device data.");
     }
   },
 

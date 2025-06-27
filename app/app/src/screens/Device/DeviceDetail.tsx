@@ -1,14 +1,16 @@
 import { View, Text, Pressable, Switch, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LineChart } from "react-native-chart-kit";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import useGlobal from "@/core/global";
 
 function Header() {
   const router = useRouter();
+
   return (
     <View
       style={{
@@ -32,12 +34,13 @@ function Header() {
 }
 
 export default function DeviceDetail() {
-  const { id, title, description, status } = useLocalSearchParams<{
+  const { id, name, location, status } = useLocalSearchParams<{
     id: string;
-    title: string;
-    description: string;
+    name: string;
+    location: string;
     status: string;
   }>();
+  console.log(id, name, location, status);
 
   // Dummy data for power usage over 24 hours
   const data = {
@@ -49,6 +52,15 @@ export default function DeviceDetail() {
       },
     ],
   };
+  const fetchDevicedata = useGlobal((state) => state.fetchDevicedata);
+  const deviceData = useGlobal((state) => state.deviceData);
+
+  const device_id = id;
+  const duration = 12;
+
+  useEffect(() => {
+    fetchDevicedata(device_id, duration);
+  }, [device_id, duration]); // Add dependencies to re-fetch if they change
 
   const [isEnabled, setIsEnabled] = useState(true);
 
@@ -58,7 +70,7 @@ export default function DeviceDetail() {
       <View
         style={{
           // margin: 16,
-          flex:1,
+          flex: 1,
           borderRadius: 18,
           backgroundColor: "#fff",
           padding: 20,
@@ -73,10 +85,10 @@ export default function DeviceDetail() {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 25,
+            marginBottom: 15,
           }}>
           <Text style={{ fontSize: 26, fontWeight: "600", flex: 1 }}>
-            Light
+            {name.charAt(0).toUpperCase() + name.slice(1)}
           </Text>
           <View
             style={{
@@ -87,9 +99,22 @@ export default function DeviceDetail() {
               marginLeft: 8,
             }}>
             <Text style={{ color: "#10B981", fontSize: 13, fontWeight: "500" }}>
-              Connected
+              {status.charAt(0).toUpperCase() + status.slice(1)}
             </Text>
           </View>
+        </View>
+        <View>
+          {" "}
+          <Text
+            style={{
+              // padding: 10,
+              // marginVertical: 10,
+              marginBottom: 15,
+              fontSize: 15,
+              color: "gray",
+            }}>
+            {location.charAt(0).toUpperCase() + location.slice(1)}
+          </Text>
         </View>
         {/* On/Off Toggle */}
         <View
@@ -112,7 +137,7 @@ export default function DeviceDetail() {
             <Text style={{ fontSize: 18 }}>💡</Text>
           </View>
           <Text style={{ fontSize: 18, fontWeight: "500", marginRight: 10 }}>
-            {isEnabled ? 'On' : 'Off'}
+            {isEnabled ? "On" : "Off"}
           </Text>
           <Switch
             value={isEnabled}

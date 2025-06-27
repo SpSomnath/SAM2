@@ -77,7 +77,9 @@ class DeviceSerializer(serializers.ModelSerializer):
             'device_name',
             'location',
             'status',
+            'switch',
+            'limit',
             'last_active',
             'created_at',
-            'data', 
+            'data'
         ]

@@ -49,5 +49,16 @@ class SignUpView(APIView):
 
         user_data = get_auth_for_user(user)
         return Response(user_data, status=200)
+                #######################
+                # MQTT setup
+                #######################
+from django.http import JsonResponse
+from .mqtt_client import client  
+
+def publish_message(request):
+    message = request.GET.get('message', 'Hello MQTT')
+    client.publish('test/topic', message)
+    return JsonResponse({'status': 'Message published', 'message': message})
+
 
         

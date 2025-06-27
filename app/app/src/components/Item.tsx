@@ -1,34 +1,17 @@
 import { View, Text, Pressable } from "react-native";
 import React from "react";
 import { router } from "expo-router";
-
 type ItemDetails = {
-  id: number;
-  title: string;
-  description: string;
+  id: string;
+  name: string;
+  location: string;
   status: string;
 };
 
-export default function Item({
-  details,
-  onDelete,
-}: {
-  details: ItemDetails;
-  onDelete?: (id: number) => void;
-}) {
+export default function Item({ details}: { details: ItemDetails }) {
+  // console.log('item page',details)
   return (
     <Pressable
-      onPress={() =>
-        router.push({
-          pathname: "/src/screens/Device/DeviceDetail",
-          params: {
-            id: details.id.toString(),
-            title: details.title,
-            description: details.description,
-            status: details.status,
-          },
-        })
-      }
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -43,35 +26,37 @@ export default function Item({
         shadowOpacity: 0.08,
         shadowRadius: 4,
         elevation: 2,
-        justifyContent: "space-between",
       }}>
-      <View style={{ flex: 1 }}>
+      <Pressable
+        onPress={() => {
+          router.push({
+            pathname: "/src/screens/Device/DeviceDetail",
+            params: {
+              id: details.id,
+              name: details.name,
+              location: details.location,
+              status: details.status,
+            },
+          });
+        }}
+        style={{ flex: 1 }}>
         <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 2 }}>
-          {details.title.charAt(0).toUpperCase() + details.title.slice(1)}
+          {details.name.charAt(0).toUpperCase() + details.name.slice(1)}
         </Text>
         <Text style={{ color: "#6B7280", fontSize: 14 }}>
-          {details.description.charAt(0).toUpperCase() +
-            details.description.slice(1)}
+          {details.location.charAt(0).toUpperCase() +
+            details.location.slice(1)}
         </Text>
-      </View>
-
-      <View style={{ alignItems: "flex-end" }}>
-        <Text
-          style={{
-            color: details.status === "active" ? "#10B981" : "#F59E42",
-            fontWeight: "bold",
-            fontSize: 16,
-          }}>
-          {details.status.charAt(0).toUpperCase() + details.status.slice(1)}
-        </Text>
-        {onDelete && (
-          <Pressable
-            onPress={() => onDelete(details.id)}
-            style={{ marginTop: 4 }}>
-            <Text style={{ color: "red", fontSize: 12 }}>Delete</Text>
-          </Pressable>
-        )}
-      </View>
+      </Pressable>
+      <Text
+        style={{
+          color: details.status === "active" ? "#10B981" : "#F59E42",
+          fontWeight: "bold",
+          fontSize: 16,
+          marginLeft: 12,
+        }}>
+        {details.status.charAt(0).toUpperCase() + details.status.slice(1)}
+      </Text>
     </Pressable>
   );
 }

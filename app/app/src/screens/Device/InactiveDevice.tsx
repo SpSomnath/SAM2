@@ -4,11 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 import Item from "@/components/Item";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomHeader from "../CustomHeader";
-import devices from "@/core/devices";
+import useGlobal from "@/core/global";
 
 
 
 export default function InactiveDevice() {
+  const devices = useGlobal(state => state.devices)
   return (
     <SafeAreaView>
       <CustomHeader title="Inactive Devices" />

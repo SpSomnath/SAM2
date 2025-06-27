@@ -33,6 +33,8 @@ class Device(models.Model):
     device_name = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
+    switch = models.BooleanField(default=False)
+    limit = models.FloatField(default=30.0)  # Example: Usage limit
     last_active = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

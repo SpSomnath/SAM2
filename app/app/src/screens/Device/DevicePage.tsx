@@ -1,30 +1,62 @@
 import React from "react";
-import { View, Text, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import Item from "@/components/Item";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, ScrollView, Text, SafeAreaView } from "react-native";
 import CustomHeader from "../CustomHeader";
-// import devices from "@/core/devices";
 import useGlobal from "@/core/global";
-
-
-const devices = useGlobal((state) => state.devices);
-
-
+import Item from "@/components/Item";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 const DevicePage = () => {
+  const devices = useGlobal((state) => state.devices);
+  const router = useRouter();
+  const { filter, title } = useLocalSearchParams<{
+    filter: string;
+    title:string
+  }>();
+
+  // Filter devices based on the filter parameter
+  const filteredDevices = devices.filter((device) => {
+    switch (filter) {
+      case "active":
+        return device.status === "active";
+      case "inactive":
+        return device.status === "inactive";
+      case "abort":
+        return device.status === "abort";
+      default:
+        return true;
+    }
+  });
+
   return (
-    <SafeAreaView>
-      <CustomHeader title="Devices" />
+    <SafeAreaView style={{ flex: 1 }}>
+      <CustomHeader title={title} />
 
       <ScrollView>
-        {devices.map((device) => (
-          // <DeviceCard/>
-          <Item key={device.id} details={device} />
-        ))}
+        {Array.isArray(filteredDevices) && filteredDevices.length > 0 ? (
+          filteredDevices.map((device) => (
+            <View key={device.id}>
+              <Item
+                details={{
+                  id: device.id,
+                  name: device.name,
+                  location: device.location,
+                  status: device.status,
+                }}
+              />
+            </View>
+          ))
+        ) : (
+          <View style={{ padding: 20, alignItems: "center" }}>
+            <Text style={{ fontSize: 16, color: "gray" }}>
+              No devices available.
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+// Define styles as constants for better readability
 
 export default DevicePage;
